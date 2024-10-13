@@ -132,4 +132,60 @@ public partial class Register : System.Web.UI.Page
             reader.Close();
         }
     }
+
+    protected void btnUpload_Click(object sender, EventArgs e)
+    {
+        if (FileUpload1.HasFile)
+        {
+            try
+            {
+                // 1. Get the file information
+                string fileName = Path.GetFileName(FileUpload1.PostedFile.FileName);
+                string fileExtension = Path.GetExtension(fileName);
+                string filePath = "~/Uploads/" + fileName;  // Server directory to save the file
+
+                // 2. Validate file size, type, etc. (optional)
+
+                // 3. Save the file to the server
+                FileUpload1.SaveAs(Server.MapPath(filePath));
+
+                // 4. Insert file data into the database
+                string connectionString = "Data Source=.\\SQLEXPRESS; Initial Catalog=final; User ID=sa; Password=sa123";
+                using (SqlConnection cn = new SqlConnection(connectionString))
+                {
+                    cn.Open();
+
+                    // SQL query to insert file details into the database
+                    string query = "INSERT INTO UploadedFiles (FileName, FilePath) VALUES (@FileName, @FilePath)";
+                    using (SqlCommand cmd = new SqlCommand(query, cn))
+                    {
+                        // Add parameters to prevent SQL injection
+                        cmd.Parameters.AddWithValue("@FileName", fileName);
+                        cmd.Parameters.AddWithValue("@FilePath", filePath);
+
+                        // Execute the query
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            lblMessage.Text = "File uploaded successfully!";
+                        }
+                        else
+                        {
+                            lblMessage.Text = "Error uploading file to the database.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "Error: " + ex.Message;
+            }
+        }
+        else
+        {
+            lblMessage.Text = "Please select a file to upload.";
+        }
+    
+}
 }
