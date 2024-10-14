@@ -114,7 +114,9 @@
                 <td class="auto-style2">file upload</td>
                 <td class="auto-style3">
                     <asp:FileUpload ID="FileUpload1" runat="server" />
-                    &nbsp;<asp:Button ID="btnUpload" runat="server" Text="Upload File" OnClick="btnUpload_Click" />
+                    &nbsp;<br />
+                    <br />
+                    <asp:Button ID="btnUpload" runat="server" Text="Upload File" OnClick="btnUpload_Click" />
             <br />
                 </td>
                 <td>&nbsp;</td>
